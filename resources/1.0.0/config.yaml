@@ -1,0 +1,37 @@
+###
+### config: ConfigMap for general configuration (e.g. used by web-ui service)
+###
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: config
+  creationTimestamp: 2017-06-09T15:17:30Z
+  labels:
+    app: helloWorld
+    version: "1.0.0"
+data:
+  message: "This is version 1.0.0 ('green') "
+  log.level: INFO
+  log.target: localhost
+  hello.config: |
+    environment=DEV
+    version=1.0.0
+    some_server=dev.mycompany.com
+
+
+---
+###
+### redis-config: ConfigMap for configuring the redis db (backend) service
+###
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: redis-config
+  creationTimestamp: 2017-06-10T20:09:30Z
+  labels:
+    app: helloWorld
+    version: "1.0.0"
+data:
+  redis.conf: |
+    port 6379
+    logfile "/var/log/redis.log"

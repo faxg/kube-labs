@@ -1,0 +1,104 @@
+##
+## Frontend service web-ui
+##
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: web-ui
+  labels:
+    name: web-ui
+    app: helloWorld
+    version: "1.0.1"
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: web-ui
+      app: helloWorld
+      version: "1.0.1"
+  template:
+    metadata:
+      name: web-ui
+      labels:
+        name: web-ui
+        app: helloWorld
+        version: "1.0.1"
+    spec:
+      restartPolicy: Always
+      volumes:
+        # Create volume from configMap (key/value --> filename/file content)
+        - name: config-volume
+          configMap:
+            name: config
+
+
+      containers:
+        - name: web-ui
+          image: faxg/hello-world-web:1.0.1
+          imagePullPolicy: IfNotPresent
+
+          livenessProbe:
+              initialDelaySeconds: 1
+              periodSeconds: 5
+              httpGet:
+                path: /health
+                port: 5000
+          readinessProbe:
+              initialDelaySeconds: 2
+              periodSeconds: 5
+              httpGet:
+                path: /ready
+                port: 5000
+          # Inject all environment vars by referencing configMap
+          #envFrom:
+          #  configMapRef:
+          #    name: config
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: message
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: log.level
+            - name: LOG_TARGET
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: log.target
+          #command: ["/bin/sh", "-c", "echo HelloWorld web ui - log-level: $(LOG_LEVEL),message: $(MESSAGE)"]
+          #imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/hello-world
+              name: config-volume
+---
+##
+## Expose as service using NodePort
+##
+kind: Service
+apiVersion: v1
+metadata:
+  name: web-ui
+  labels:
+    name: web-ui
+    app: helloWorld
+    version: "1.0.1"
+
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP
+  selector:
+    name: web-ui
+    app: helloWorld
+    version: "1.0.1"
