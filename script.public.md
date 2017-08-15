@@ -87,7 +87,6 @@ Space:          dev
 ```
 > bx cs init
 Using default API endpoint: https://eu-central.containers.bluemix.net
-OK
 ```
 
  1. Check if your cluster is already up&running:
@@ -155,7 +154,10 @@ _"As a devOps engineer, I want to deploy a sample application using public image
 
 
 **Terminal**:
-1. 
+1. Deploy version 1.0.0. We can apply a whole directory containing our resources as `.yaml` files.
+```
+kubectl apply -f resources/1.0.0/
+```
 1.
 1.
 

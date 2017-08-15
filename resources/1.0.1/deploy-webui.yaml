@@ -86,9 +86,9 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: web-ui
+  name: helloWorld
   labels:
-    name: web-ui
+    name: helloWorld
     app: helloWorld
     version: "1.0.1"
 
