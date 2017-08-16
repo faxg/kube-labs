@@ -86,9 +86,9 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: helloWorld
+  name: hello
   labels:
-    name: helloWorld
+    name: hello
     app: helloWorld
     version: "1.0.1"
 

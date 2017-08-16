@@ -1,7 +1,0 @@
-##
-## Define the namespace for this application
-##
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: hello-world

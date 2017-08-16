@@ -156,10 +156,34 @@ _"As a devOps engineer, I want to deploy a sample application using public image
 **Terminal**:
 1. Deploy version 1.0.0. We can apply a whole directory containing our resources as `.yaml` files.
 ```
-kubectl apply -f resources/1.0.0/
+> kubectl apply -f resources/1.0.0/
 ```
-1.
-1.
+1. Get information about service:
+```
+> kubectl describe service hello
+Name:			hello
+Namespace:		default
+Labels:			app=helloWorld
+			name=hello
+			version=1.0.0
+Selector:		app=helloWorld,name=web-ui,version=1.0.0
+Type:			NodePort
+IP:			10.10.10.45
+Port:			<unset>	80/TCP
+NodePort:		<unset>	30903/TCP
+Endpoints:		172.30.57.203:5000,172.30.57.204:5000,172.30.57.205:5000
+Session Affinity:	None
+No events.
+```
+1. Use  the NodePort and the (public) IP of your worker:
+```
+curl http://169.51.10.229:30903/
+```
+
+*Browser*:
+1. Open browser on `http://your_worker_ip:NodePort``
+
+
 
 
 Please note that exposing your service using ClusterIP / NodePort does not actually deploy a loadbalancer or reverse proxy (such as nginx) in front of your pod replicas. This
@@ -169,16 +193,21 @@ Kubernetes has another resource type called horizontal
 ## Deploy an application change
 _"As a devOps engineer, I want to deploy a new image version (1.0.1) of the web UI into my development cluster - without downtime and the ability to rollback changes to the previous, stable deployment"_
 
+*Browser:*
+1. Apply resource manifests of version 1.0.1.:
+```
+> kubectl apply -f resources/1.0.1/
+```
 
 <!--## Deploy a "breaking" change to the database
 _"As a devOps engineer, I want to deploy "_
--->
 
 ## Promote deployment into "Production"
 _"As an operator, I want to promote the deployed application version from 'development' into 'production' without downtime, so that it is instantly exposed to application users under a stable, 'production' URL"_
 
 *Note*: In the real (Enterprise IT) world, we would probably have different kubernetes clusters for a true isolation between 'dev' and 'production' environments. This is a tradeoff between the idealized '_dev/prod environment parity_' and Enterprise IT policies that may be subject to strict corporate security guidelines and/or regulatory requirements for operational risk management (e.g. in the Banking/FSS industry).
 
+-->
 
 
 ## FAQ
