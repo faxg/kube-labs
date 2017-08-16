@@ -1,0 +1,71 @@
+##
+## Deployment for the redis backend service (consumed by web-ui, not exposed outside cliuster)
+## data is currently mounted to empty host path
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: redis
+  labels:
+    name: redis
+    app: helloWorld
+    version: "1.0.0"
+
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: redis-db
+      labels:
+        name: redis-db
+        app: helloWorld
+        version: "1.0.0"
+
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 6379
+          resources:
+            limits:
+              cpu: "0.1"
+          volumeMounts:
+            - mountPath: /data
+              name: data-volume
+            - mountPath: /etc/redis
+              name: config-volume
+
+      volumes:
+        - name: data-volume
+          hostPath:
+            path: /var/app/redis-data
+        - name: config-volume
+          configMap:
+            name: redis-config
+            items:
+              - key: redis.conf
+                path: redis.conf
+
+---
+
+##
+## Expose redis as a service (cluster-internal, no ingress)
+##
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-db
+  labels:
+    name: redis-db
+    app: helloWorld
+
+spec:
+  ports:
+  - port: 6379
+    name: redis
+    targetPort: 6379
+  selector:
+    name: redis-db
+    app: helloWorld

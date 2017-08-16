@@ -1,0 +1,3 @@
+Kube Lab: http://bit.ly/2uNZARo
+Hello Minikube (local): http://bit.ly/2uHHMf6
+Install ICp CE:  https://ibm.co/2wdvhHk
